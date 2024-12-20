@@ -358,7 +358,7 @@ def trace_evaluate(expr, evaluation, status: str, fn: Callable, orig_expr=None):
     indents = "  " * evaluation.recursion_depth
 
     if orig_expr is not None:
-        formatted_orig_expr = format_element(orig_expr)
+        formatted_orig_expr = format_element(orig_expr, use_operator_form=True)
         if fn.__name__ == "rewrite_apply_eval_step":
             if orig_expr != expr[0]:
                 if status == "Returning":
@@ -369,23 +369,20 @@ def trace_evaluate(expr, evaluation, status: str, fn: Callable, orig_expr=None):
                         return
                 else:
                     arrow = " = "
-                formatted_expr = format_element(expr[0])
+                formatted_expr = format_element(expr[0], use_operator_form=True)
                 msg(
-                    f"{indents}{status}: "
+                    f"{indents}{status:10}: "
                     + pygments_format(
                         formatted_orig_expr + arrow + formatted_expr, style
                     )
                 )
         else:
-            formatted_expr = format_element(expr)
+            formatted_expr = format_element(expr, use_operator_form=True)
             assign_str = f"{formatted_orig_expr} = {formatted_expr}"
-            msg(
-                f"{indents}{status}: "
-                f"{pygments_format(assign_str, style)}"
-            )
+            msg(f"{indents}{status:10}: " f"{pygments_format(assign_str, style)}")
     elif not hasattr(fn, "__name__") or fn.__name__ != "rewrite_apply_eval_step":
-        formatted_expr = format_element(expr)
-        msg(f"{indents}{status}: {pygments_format(formatted_expr, style)}")
+        formatted_expr = format_element(expr, use_operator_form=True)
+        msg(f"{indents}{status:10}: {pygments_format(formatted_expr, style)}")
 
 
 # Smash TraceEvaluation's print routine
